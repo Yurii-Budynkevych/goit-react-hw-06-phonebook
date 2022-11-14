@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import shortid from 'shortid';
 import './App.css';
 import ContactForm from './Form/Form';
 import ContactList from './Contacts/Contacts';
 import Filter from './Filter/Filter';
+import { filterSliseReducer } from 'redux/filterSlice';
 
 const LS_KEY = 'contacts';
 
@@ -11,7 +13,9 @@ export const App = () => {
   const [contacts, setContacts] = useState(
     () => JSON.parse(window.localStorage.getItem(LS_KEY)) ?? []
   );
-  const [filter, setFilter] = useState('');
+
+  const dispatch = useDispatch();
+  const value = useSelector(state => state.filter);
   // ////////////////////////////////////////////////////////////////////////
   const submitHandler = (values, { resetForm }) => {
     values.id = shortid.generate();
@@ -30,10 +34,10 @@ export const App = () => {
   };
 
   const filterHandler = e => {
-    setFilter(e.target.value);
+    dispatch(filterSliseReducer(e.target.value));
   };
 
-  const normalizedFilter = filter.toLowerCase();
+  const normalizedFilter = value.toLowerCase();
   const visibleContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter)
   );
@@ -48,7 +52,7 @@ export const App = () => {
       <ContactForm onSubmit={submitHandler} />
 
       <h2 className="subtitle">Contacts</h2>
-      <Filter value={filter} onFilter={filterHandler} />
+      <Filter value={value} onFilter={filterHandler} />
       <ContactList arr={visibleContacts} onDelete={deleteHandler} />
     </>
   );
