@@ -10,7 +10,9 @@ import { sub } from 'redux/contactsSlice';
 export const App = () => {
   const dispatch = useDispatch();
   const filterValue = useSelector(state => state.filter);
-  const contactsValue = useSelector(state => state.contacts);
+  const a = useSelector(state => state.contacts);
+  console.log(a);
+  const contactsValue = [];
 
   const submitHandler = (values, { resetForm }) => {
     values.id = shortid.generate();
